@@ -2,7 +2,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   Database,
-  HardDrive,
   LoaderCircle,
   RefreshCw,
   type LucideIcon,
@@ -18,7 +17,6 @@ type CheckDefinition = {
 
 const checkDefinitions: CheckDefinition[] = [
   { checkKey: "database", label: "数据库", icon: Database },
-  { checkKey: "dataDirectory", label: "数据目录", icon: HardDrive },
 ];
 
 function CheckCard({ label, icon: Icon, check }: CheckDefinition & { check: ReadinessCheck }) {

@@ -56,7 +56,7 @@ flowchart LR
 
 ## 6. MVP 范围
 
-- 单实例中央服务、SQLite、运营管理员 Web 控制台。
+- 中央 Web 服务、独立 Worker、PostgreSQL 和运营管理员 Web 控制台。
 - 运营者签发和撤销野人音乐客户端凭证。
 - 接收单曲观测并创建幂等解析请求。
 - 中央 Artist、Release、Recording、Track 目录。

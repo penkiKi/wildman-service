@@ -6,16 +6,11 @@ import (
 	"embed"
 	"fmt"
 	"io/fs"
-	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
-	_ "modernc.org/sqlite"
 )
-
-const filename = "wildman.db"
 
 //go:embed migrations/*.sql
 var migrationFiles embed.FS
@@ -38,51 +33,15 @@ var migrations = []migration{
 	{version: 10, file: "migrations/010_provider_metrics.sql"},
 }
 
-func Open(ctx context.Context, dataDir string) (*DB, error) {
-	if dataDir == "" {
-		return nil, fmt.Errorf("data directory is required")
-	}
-
-	absoluteDir, err := filepath.Abs(dataDir)
-	if err != nil {
-		return nil, fmt.Errorf("resolve data directory: %w", err)
-	}
-	if err := os.MkdirAll(absoluteDir, 0o700); err != nil {
-		return nil, fmt.Errorf("create data directory: %w", err)
-	}
-
-	databasePath := filepath.Join(absoluteDir, filename)
-	dsn := "file:" + filepath.ToSlash(databasePath) +
-		"?_pragma=busy_timeout(5000)&_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)"
-
-	rawDB, err := sql.Open("sqlite", dsn)
-	if err != nil {
-		return nil, fmt.Errorf("open database: %w", err)
-	}
-	db := &DB{DB: rawDB, dialect: DialectSQLite}
-	db.SetMaxOpenConns(1)
-
-	if err := db.PingContext(ctx); err != nil {
-		db.Close()
-		return nil, fmt.Errorf("ping database: %w", err)
-	}
-	if err := applyMigrations(ctx, db); err != nil {
-		db.Close()
-		return nil, err
-	}
-
-	return db, nil
-}
-
-func OpenPostgres(ctx context.Context, databaseURL string) (*DB, error) {
+func Open(ctx context.Context, databaseURL string) (*DB, error) {
 	if databaseURL == "" {
-		return nil, fmt.Errorf("PostgreSQL database URL is required")
+		return nil, fmt.Errorf("WILDMAN_DATABASE_URL is required")
 	}
 	rawDB, err := sql.Open("pgx", databaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("open PostgreSQL: %w", err)
 	}
-	db := &DB{DB: rawDB, dialect: DialectPostgres}
+	db := &DB{DB: rawDB}
 	db.SetMaxOpenConns(20)
 	if err := db.PingContext(ctx); err != nil {
 		db.Close()
@@ -93,13 +52,6 @@ func OpenPostgres(ctx context.Context, databaseURL string) (*DB, error) {
 		return nil, err
 	}
 	return db, nil
-}
-
-func OpenConfigured(ctx context.Context, dataDir, databaseURL string) (*DB, error) {
-	if databaseURL != "" {
-		return OpenPostgres(ctx, databaseURL)
-	}
-	return Open(ctx, dataDir)
 }
 
 func applyMigrations(ctx context.Context, db *DB) error {

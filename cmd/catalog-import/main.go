@@ -32,11 +32,14 @@ type importRecord struct {
 }
 
 func main() {
-	dataDir := flag.String("data-dir", "./data", "service data directory")
 	input := flag.String("input", "", "MusicBrainz-derived JSONL file")
 	flag.Parse()
 	if *input == "" {
 		fail("-input is required")
+	}
+	databaseURL := strings.TrimSpace(os.Getenv("WILDMAN_DATABASE_URL"))
+	if databaseURL == "" {
+		fail("WILDMAN_DATABASE_URL is required")
 	}
 	file, err := os.Open(*input)
 	if err != nil {
@@ -45,7 +48,7 @@ func main() {
 	defer file.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), 24*time.Hour)
 	defer cancel()
-	db, err := database.Open(ctx, *dataDir)
+	db, err := database.Open(ctx, databaseURL)
 	if err != nil {
 		fail(err.Error())
 	}

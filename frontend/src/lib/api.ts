@@ -17,7 +17,6 @@ export type Readiness = {
   status: "ready" | "not_ready";
   checks: {
     database: ReadinessCheck;
-    dataDirectory: ReadinessCheck;
   };
   time: string;
 };

@@ -9,8 +9,9 @@ flowchart LR
     Files["NAS 音乐文件"] --> WM["野人音乐"]
     WM -->|"出站 HTTPS"| API["Wildman Service API"]
     Operator["运营 Web"] --> API
-    API --> DB[("中央目录与缓存")]
-    API --> Provider["元数据 Provider"]
+    API --> DB[("PostgreSQL 中央目录与缓存")]
+    Worker["wildman-worker"] --> DB
+    Worker --> Provider["元数据 Provider"]
     API -->|"候选与 Tag Patch"| WM
     WM --> Files
 ```
@@ -45,7 +46,7 @@ Infrastructure ─────────────→ Domain
 - `internal/app/client`：客户端凭证与授权用例。
 - `internal/app/resolution`：观测接收、幂等请求和匹配编排。
 - `internal/app/provider`：最小查询接口、来源候选 DTO 和稳定错误分类；Provider DTO 不进入 Domain。
-- `internal/infra/database`：SQLite Repository 和迁移。
+- `internal/infra/database`：PostgreSQL Repository 和迁移。
 - `internal/infra/provider`：外部来源适配器、限流和响应边界。
 - `internal/httpserver`：统一响应、Cookie/Bearer 认证、CORS 和参数校验。
 
@@ -95,7 +96,7 @@ Provider payload 不能直接覆盖客户端观测或规范实体。
 
 ## 8. 部署与演进
 
-- 当前单节点使用 SQLite 和进程内固定 Worker。
-- 数据量、并发或高可用需求出现后迁移 PostgreSQL 与独立 Worker。
+- Web 与独立 Worker 共享 PostgreSQL；Worker 使用行锁安全领取任务。
+- Web 与 Worker 都必须通过 `WILDMAN_DATABASE_URL` 连接数据库。
 - Provider 先静态编译进单体；插件系统后置。
-- 生产服务只持久化 `/data`，不挂载 `/music`，不需要音频解析工具。
+- PostgreSQL 数据由数据库服务持久化和备份；应用容器不挂载 `/music`，不需要音频解析工具。

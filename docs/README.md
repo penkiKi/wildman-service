@@ -16,7 +16,7 @@
 | [PROVIDER_WIKIDATA.md](./PROVIDER_WIKIDATA.md) | 第二 Provider 与跨来源证据边界 |
 | [PROVIDER_ACOUSTID.md](./PROVIDER_ACOUSTID.md) | 本地 Chromaprint 与中央 AcoustID 查询边界 |
 | [MATCH_QUALITY.md](./MATCH_QUALITY.md) | 脱敏匹配样本、离线质量指标与扩充规则 |
-| [BACKUP_RESTORE.md](./BACKUP_RESTORE.md) | SQLite 一致备份、验证、恢复与回滚步骤 |
+| [BACKUP_RESTORE.md](./BACKUP_RESTORE.md) | PostgreSQL 备份、验证、恢复与演练步骤 |
 | [RELEASE.md](./RELEASE.md) | 反向代理、HTTPS、双架构镜像与发布检查 |
 | [SECURITY_CHECKS.md](./SECURITY_CHECKS.md) | 漏洞、秘密、许可检查与 SPDX SBOM 流程 |
 | [MUSICBRAINZ_DUMP.md](./MUSICBRAINZ_DUMP.md) | 开放目录 Dump 的许可、转换、导入与规模边界 |

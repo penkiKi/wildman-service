@@ -38,9 +38,9 @@ server {
 
 只信任来自该反向代理的转发头；防火墙同时限制后端端口。TLS 最低版本、证书续期和 HSTS 由代理统一管理。运营 Web 与客户端 API 使用同一 HTTPS 域名时无需额外 CORS；跨来源运营前端必须把完整来源加入 `WILDMAN_ALLOWED_ORIGINS`。
 
-## 单实例数据
+## 数据库
 
-只挂载 `/data`，不挂载 NAS 音乐目录。SQLite 模式只运行一个 Wildman Service 副本；滚动多副本、共享网络文件系统和跨主机同时写入均不受支持。升级前按 [BACKUP_RESTORE.md](./BACKUP_RESTORE.md) 创建并验证备份。
+Web 与 Worker 必须通过 `WILDMAN_DATABASE_URL` 连接 PostgreSQL。应用容器不持久化数据库文件，也不挂载 NAS 音乐目录。生产连接启用 TLS，并使用独立秘密管理数据库凭证。升级前按 [BACKUP_RESTORE.md](./BACKUP_RESTORE.md) 创建并验证备份；发布时先启动一个 Web 实例完成迁移，再扩容 Web 与 Worker。
 
 ## amd64 与 arm64 镜像
 

@@ -54,10 +54,10 @@ MVP 要证明以下闭环：
 
 ## 4. 技术边界
 
-- MVP 单节点使用 SQLite，验证真实流量后、开放大规模接入前迁移 PostgreSQL。
+- Web 与独立 Worker 使用 PostgreSQL，连接统一由 `WILDMAN_DATABASE_URL` 提供。
 - Web 管理端只供运营者管理客户端、Provider、缓存和任务。
 - 野人音乐是最终用户交互和本地文件操作端。
-- MVP 只接一个 Provider，不提前实现插件系统或跨节点 Worker。
+- Provider 静态编译进 Worker，不提前实现插件系统。
 
 ## 5. 非目标
 

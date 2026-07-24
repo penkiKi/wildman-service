@@ -1,16 +1,17 @@
-# SQLite 备份与恢复
+# PostgreSQL 备份与恢复
 
-备份可以在服务运行时执行，使用 SQLite `VACUUM INTO` 创建一致的新文件；输出路径已存在时拒绝覆盖。
-
-```powershell
-go run ./cmd/dbtool backup -data-dir ./data -out ./backups/wildman-20260724.db
-go run ./cmd/dbtool verify -file ./backups/wildman-20260724.db
-```
-
-恢复必须先停止 Wildman Service，避免进程持有旧数据库及 WAL。命令会先验证完整性和迁移版本；现有 `wildman.db` 会改名为 `.before-restore-<UTC>` 可恢复副本，然后才激活备份：
+生产环境使用 PostgreSQL 官方 `pg_dump` 和 `pg_restore`。备份连接应使用具备读取全部 Wildman 表权限的专用凭证，备份文件应加密存储并纳入保留策略。
 
 ```powershell
-go run ./cmd/dbtool restore -data-dir ./data -from ./backups/wildman-20260724.db -confirm
+$env:WILDMAN_DATABASE_URL="postgres://wildman:<password>@postgres:5432/wildman?sslmode=require"
+pg_dump --dbname=$env:WILDMAN_DATABASE_URL --format=custom --file=./backups/wildman-20260724.dump
+pg_restore --list ./backups/wildman-20260724.dump
 ```
 
-恢复后启动服务并检查 `/api/v1/ready`。确认无误前不要删除旧数据库副本；备份和旧副本都包含敏感曲目观测与凭证摘要，应使用受限存储并纳入保留清理。
+恢复前停止所有 Web 与 Worker 写入，并先备份当前数据库。将目标数据库重建为空库后恢复；生产凭证、所有者和扩展由数据库运营方按环境重新配置，不从归档继承。
+
+```powershell
+pg_restore --dbname=$env:WILDMAN_DATABASE_URL --no-owner --no-privileges ./backups/wildman-20260724.dump
+```
+
+恢复后先启动一个 Web 实例，确认迁移版本和 `/api/v1/ready`，再启动其余 Web 与 Worker。定期在隔离环境演练恢复并核对关键实体数量。备份包含敏感曲目观测与凭证摘要，必须限制访问。

@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	appprovider "wildman-service/internal/app/provider"
@@ -31,9 +30,6 @@ func (store *WorkerStore) SaveProviderMetrics(ctx context.Context, metrics apppr
 func NewWorkerStore(database *DB) *WorkerStore { return &WorkerStore{database: database} }
 
 func (store *WorkerStore) ClaimResolution(ctx context.Context) (catalog.ResolutionRequest, catalog.StoredTrackObservation, bool, error) {
-	if store.database.Dialect() != DialectPostgres {
-		return catalog.ResolutionRequest{}, catalog.StoredTrackObservation{}, false, fmt.Errorf("independent worker requires PostgreSQL")
-	}
 	transaction, err := store.database.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return catalog.ResolutionRequest{}, catalog.StoredTrackObservation{}, false, err

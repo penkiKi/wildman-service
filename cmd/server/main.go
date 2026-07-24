@@ -26,9 +26,13 @@ func main() {
 	cfg := config.Load()
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: cfg.LogLevel()}))
 	slog.SetDefault(logger)
+	if cfg.DatabaseURL == "" {
+		logger.Error("server requires WILDMAN_DATABASE_URL")
+		os.Exit(1)
+	}
 
 	startupContext, cancelStartup := context.WithTimeout(context.Background(), 15*time.Second)
-	db, err := database.OpenConfigured(startupContext, cfg.DataDir, cfg.DatabaseURL)
+	db, err := database.Open(startupContext, cfg.DatabaseURL)
 	cancelStartup()
 	if err != nil {
 		logger.Error("database initialization failed", "error", err)

@@ -22,8 +22,6 @@ services:
       WILDMAN_DATABASE_URL: postgres://wildman:${WILDMAN_POSTGRES_PASSWORD:-wildman-development-only}@postgres:5432/wildman?sslmode=disable
     depends_on:
       - postgres
-    volumes:
-      - ./data:/data
     restart: unless-stopped
 
   worker:

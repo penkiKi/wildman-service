@@ -23,19 +23,15 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates tzdata \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --system --gid 10001 wildman \
-    && useradd --system --uid 10001 --gid wildman --home-dir /data --shell /usr/sbin/nologin wildman \
-    && mkdir -p /data \
-    && chown -R wildman:wildman /data
+    && useradd --system --uid 10001 --gid wildman --no-create-home --home-dir /nonexistent --shell /usr/sbin/nologin wildman
 
 COPY --from=backend-build /out/wildman-service /usr/local/bin/wildman-service
 COPY --from=backend-build /out/wildman-worker /usr/local/bin/wildman-worker
 
 ENV WILDMAN_HOST=0.0.0.0 \
     WILDMAN_PORT=8080 \
-    WILDMAN_ENV=production \
-    WILDMAN_DATA_DIR=/data
+    WILDMAN_ENV=production
 
 USER wildman
 EXPOSE 8080
-VOLUME ["/data"]
 ENTRYPOINT ["/usr/local/bin/wildman-service"]

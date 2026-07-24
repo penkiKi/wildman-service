@@ -7,30 +7,20 @@ import (
 	"strings"
 )
 
-type Dialect string
-
-const (
-	DialectSQLite   Dialect = "sqlite"
-	DialectPostgres Dialect = "postgres"
-)
-
 type DB struct {
 	*sql.DB
-	dialect Dialect
 }
 
-func (database *DB) Dialect() Dialect { return database.dialect }
-
 func (database *DB) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
-	return database.DB.ExecContext(ctx, rebind(query, database.dialect), args...)
+	return database.DB.ExecContext(ctx, rebind(query), args...)
 }
 
 func (database *DB) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
-	return database.DB.QueryContext(ctx, rebind(query, database.dialect), args...)
+	return database.DB.QueryContext(ctx, rebind(query), args...)
 }
 
 func (database *DB) QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row {
-	return database.DB.QueryRowContext(ctx, rebind(query, database.dialect), args...)
+	return database.DB.QueryRowContext(ctx, rebind(query), args...)
 }
 
 func (database *DB) BeginTx(ctx context.Context, options *sql.TxOptions) (*Tx, error) {
@@ -38,28 +28,27 @@ func (database *DB) BeginTx(ctx context.Context, options *sql.TxOptions) (*Tx, e
 	if err != nil {
 		return nil, err
 	}
-	return &Tx{Tx: transaction, dialect: database.dialect}, nil
+	return &Tx{Tx: transaction}, nil
 }
 
 type Tx struct {
 	*sql.Tx
-	dialect Dialect
 }
 
 func (transaction *Tx) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
-	return transaction.Tx.ExecContext(ctx, rebind(query, transaction.dialect), args...)
+	return transaction.Tx.ExecContext(ctx, rebind(query), args...)
 }
 
 func (transaction *Tx) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
-	return transaction.Tx.QueryContext(ctx, rebind(query, transaction.dialect), args...)
+	return transaction.Tx.QueryContext(ctx, rebind(query), args...)
 }
 
 func (transaction *Tx) QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row {
-	return transaction.Tx.QueryRowContext(ctx, rebind(query, transaction.dialect), args...)
+	return transaction.Tx.QueryRowContext(ctx, rebind(query), args...)
 }
 
-func rebind(query string, dialect Dialect) string {
-	if dialect != DialectPostgres || !strings.Contains(query, "?") {
+func rebind(query string) string {
+	if !strings.Contains(query, "?") {
 		return query
 	}
 	var builder strings.Builder

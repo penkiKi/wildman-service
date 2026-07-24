@@ -114,12 +114,8 @@ func (store *AccountStore) ConsumeDeviceAuthorization(ctx context.Context, devic
 		return "", false, err
 	}
 	defer transaction.Rollback()
-	lock := ""
-	if store.database.Dialect() == DialectPostgres {
-		lock = " FOR UPDATE"
-	}
 	var status, accountID, clientName, expiresAt string
-	err = transaction.QueryRowContext(ctx, `SELECT status, COALESCE(account_id, ''), client_name, expires_at FROM device_authorizations WHERE device_code_hash = ?`+lock, deviceCodeHash).Scan(&status, &accountID, &clientName, &expiresAt)
+	err = transaction.QueryRowContext(ctx, `SELECT status, COALESCE(account_id, ''), client_name, expires_at FROM device_authorizations WHERE device_code_hash = ? FOR UPDATE`, deviceCodeHash).Scan(&status, &accountID, &clientName, &expiresAt)
 	if err == sql.ErrNoRows {
 		return "", false, nil
 	}

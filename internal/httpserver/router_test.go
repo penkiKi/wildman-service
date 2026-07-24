@@ -14,7 +14,7 @@ import (
 
 func TestHealth(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	cfg := config.Config{Environment: "test", DataDir: "."}
+	cfg := config.Config{Environment: "test"}
 	router := NewRouter(cfg, logger, appsystem.NewService(nil, cfg), nil, nil, nil, nil, nil)
 
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/health", nil)
@@ -38,7 +38,7 @@ func TestHealth(t *testing.T) {
 
 func TestSPAIsServed(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	cfg := config.Config{Environment: "test", DataDir: "."}
+	cfg := config.Config{Environment: "test"}
 	router := NewRouter(cfg, logger, appsystem.NewService(nil, cfg), nil, nil, nil, nil, nil)
 
 	request := httptest.NewRequest(http.MethodGet, "/", nil)

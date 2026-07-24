@@ -11,7 +11,6 @@ type Config struct {
 	Host            string
 	Port            string
 	Environment     string
-	DataDir         string
 	Log             string
 	AllowedOrigins  []string
 	ProviderContact string
@@ -29,7 +28,6 @@ func Load() Config {
 		Host:            env("WILDMAN_HOST", "0.0.0.0"),
 		Port:            env("WILDMAN_PORT", "8080"),
 		Environment:     environment,
-		DataDir:         env("WILDMAN_DATA_DIR", "./data"),
 		Log:             env("WILDMAN_LOG_LEVEL", "info"),
 		AllowedOrigins:  splitCSV(env("WILDMAN_ALLOWED_ORIGINS", allowedOrigins)),
 		ProviderContact: env("WILDMAN_PROVIDER_CONTACT", ""),

@@ -5,7 +5,7 @@
 ## 0. 已完成基础
 
 - [x] `C0001` 建立 Go、React、Bun、Tailwind、Docker 和嵌入式 Web 骨架。
-- [x] `C0002` 实现 SQLite 迁移、健康/就绪接口、日志、Request ID 和统一响应信封。
+- [x] `C0002` 实现数据库迁移、健康/就绪接口、日志、Request ID 和统一响应信封。
 - [x] `C0003` 实现运营管理员初始化、Argon2id、Session、CSRF、Origin 白名单和登录限速。
 - [x] `C0004` 实现初始化、登录、退出和受保护的运营 Web 布局。
 - [x] `C0005` 将产品边界调整为野人音乐本地扫描、Wildman Service 中央匹配。
@@ -54,7 +54,7 @@
 - [x] `C4101` 接收野人音乐的接受、拒绝和本地写回结果。
 - [x] `C4102` 实现客户端、任务、Provider 和缓存运营页面。
 - [x] `C4103` 实现数据保留、客户端删除和审计策略。
-- [x] `C4104` 完成 SQLite 备份、恢复和迁移验证。
+- [x] `C4104` 完成 PostgreSQL 备份、恢复和迁移验证。
 - [x] `C4105` 完成反向代理、HTTPS、amd64/arm64 和发布文档。
 - [x] `C4106` 完成安全检查、依赖许可证、秘密扫描和 SBOM。
 
@@ -63,7 +63,7 @@
 - [x] `C5101` 评估并导入 MusicBrainz Dump 等开放目录。
 - [x] `C5102` 增加第二 Provider 和跨来源证据。
 - [x] `C5103` 支持 AcoustID/Chromaprint 指纹查询。
-- [x] `C5104` 迁移 PostgreSQL 和独立 Worker。
+- [x] `C5104` 切换至 PostgreSQL 和独立 Worker。
 - [x] `C5105` 增加配额、设备授权、公开注册和计费。
 
 ## Definition of Done

@@ -2,7 +2,6 @@ package system
 
 import (
 	"context"
-	"os"
 	"runtime"
 	"time"
 
@@ -19,8 +18,7 @@ type Check struct {
 }
 
 type ReadinessChecks struct {
-	Database      Check `json:"database"`
-	DataDirectory Check `json:"dataDirectory"`
+	Database Check `json:"database"`
 }
 
 type Readiness struct {
@@ -48,11 +46,9 @@ func NewService(database Database, cfg config.Config) *Service {
 
 func (s *Service) Readiness(ctx context.Context) (Readiness, bool) {
 	checks := ReadinessChecks{
-		Database:      checkDatabase(ctx, s.database),
-		DataDirectory: checkDirectory(s.config.DataDir),
+		Database: checkDatabase(ctx, s.database),
 	}
-	ready := checks.Database.Status == "ok" &&
-		checks.DataDirectory.Status == "ok"
+	ready := checks.Database.Status == "ok"
 	status := "ready"
 	if !ready {
 		status = "not_ready"
@@ -81,20 +77,6 @@ func checkDatabase(ctx context.Context, database Database) Check {
 	}
 	if err := database.PingContext(ctx); err != nil {
 		return Check{Status: "error", Message: "数据库不可用"}
-	}
-	return Check{Status: "ok"}
-}
-
-func checkDirectory(path string) Check {
-	info, err := os.Stat(path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return Check{Status: "error", Message: "目录不存在"}
-		}
-		return Check{Status: "error", Message: "目录不可访问"}
-	}
-	if !info.IsDir() {
-		return Check{Status: "error", Message: "路径不是目录"}
 	}
 	return Check{Status: "ok"}
 }

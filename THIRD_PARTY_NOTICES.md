@@ -5,8 +5,8 @@ Wildman Service depends directly on the following open-source packages. Transiti
 | Component | License |
 |---|---|
 | github.com/go-chi/chi/v5 | MIT |
+| github.com/jackc/pgx/v5 | MIT |
 | golang.org/x/crypto | BSD-3-Clause |
-| modernc.org/sqlite | BSD-3-Clause |
 | React / React DOM | MIT |
 | lucide-react | ISC |
 | Tailwind CSS / @tailwindcss/vite | MIT |

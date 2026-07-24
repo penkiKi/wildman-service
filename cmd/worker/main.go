@@ -25,7 +25,7 @@ func main() {
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
-	db, err := database.OpenPostgres(ctx, cfg.DatabaseURL)
+	db, err := database.Open(ctx, cfg.DatabaseURL)
 	if err != nil {
 		logger.Error("worker database initialization failed", "error", err)
 		os.Exit(1)

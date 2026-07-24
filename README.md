@@ -7,7 +7,7 @@ Wildman Service 是为野人音乐提供共享目录、缓存和匹配能力的�
 ## 技术栈
 
 - Go 1.26 + chi
-- SQLite（单节点 MVP）
+- PostgreSQL 16
 - React 19 + TypeScript + Vite
 - Tailwind CSS
 - Bun 1.3.5
@@ -25,6 +25,8 @@ bun run dev
 后端：
 
 ```powershell
+docker compose up -d postgres
+$env:WILDMAN_DATABASE_URL="postgres://wildman:wildman-development-only@localhost:5432/wildman?sslmode=disable"
 go run ./cmd/server
 ```
 
@@ -46,14 +48,14 @@ go build -trimpath -o bin/wildman-service.exe ./cmd/server
 docker compose up --build
 ```
 
-启动后访问 `http://localhost:8080`。容器只持久化 `/data`，不需要挂载用户音乐目录。
+启动后访问 `http://localhost:8080`。Compose 将 PostgreSQL 数据持久化到 `postgres-data` 卷，不需要挂载用户音乐目录。
 
 ## 当前状态
 
 已完成：
 
 - Go/React/Bun 单体骨架和嵌入式 Web
-- SQLite 迁移、统一 API 信封、健康与就绪接口
+- PostgreSQL 迁移、统一 API 信封、健康与就绪接口
 - 运营管理员初始化、登录、Session、CSRF 和 Origin 白名单
 - 受保护的运营 Web 布局
 - 客户端安装、中央目录、来源观测和解析请求数据库基础
@@ -63,6 +65,7 @@ docker compose up --build
 - 客户端 Bearer Token 认证、最后使用时间和每客户端限流
 - 曲目观测 upsert 与幂等解析请求创建、隔离查询 API
 - 客户账户、设备授权、月度配额与订阅控制面
+- 独立 Worker 并发领取与处理解析任务
 - 服务端移除 `/music`、ffprobe 和本地文件写入依赖
 
 当前阶段实现运营者签发客户端凭证，以及野人音乐提交曲目观测和创建幂等解析请求。详见 [docs/TODO.md](./docs/TODO.md)。
