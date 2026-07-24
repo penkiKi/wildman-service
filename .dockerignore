@@ -1,0 +1,9 @@
+.git
+.gitignore
+.idea
+.vscode
+frontend/node_modules
+web/dist
+data
+music
+*.db

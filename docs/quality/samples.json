@@ -1,0 +1,20 @@
+[
+  {
+    "name": "synthetic-zh-exact",
+    "observation": {"Title":"七里香","Artists":["周杰伦"],"Album":"七里香","DurationMS":299520},
+    "candidates": [
+      {"recording":{"ID":"synthetic-rec-a","Title":"七里香","Artists":[{"ID":"synthetic-artist-a","Name":"周杰伦"}],"DurationMS":299000},"release":{"ID":"synthetic-release-a","Title":"七里香"}},
+      {"recording":{"ID":"synthetic-rec-b","Title":"晴天","Artists":[{"ID":"synthetic-artist-a","Name":"周杰伦"}],"DurationMS":269000},"release":{"ID":"synthetic-release-b","Title":"叶惠美"}}
+    ],
+    "expectedRecordingId":"synthetic-rec-a"
+  },
+  {
+    "name": "synthetic-en-live-conflict",
+    "observation": {"Title":"Northern Lights (Live)","Artists":["Example Band"],"Album":"Live Hall","DurationMS":241000},
+    "candidates": [
+      {"recording":{"ID":"synthetic-rec-live","Title":"Northern Lights - Live","Artists":[{"ID":"synthetic-artist-band","Name":"Example Band"}],"DurationMS":240500},"release":{"ID":"synthetic-release-live","Title":"Live Hall"}},
+      {"recording":{"ID":"synthetic-rec-studio","Title":"Northern Lights","Artists":[{"ID":"synthetic-artist-band","Name":"Example Band"}],"DurationMS":218000},"release":{"ID":"synthetic-release-studio","Title":"First Album"}}
+    ],
+    "expectedRecordingId":"synthetic-rec-live"
+  }
+]

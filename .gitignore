@@ -1,0 +1,25 @@
+# Go
+/bin/
+*.exe
+*.test
+*.out
+
+# Frontend
+/frontend/node_modules/
+/frontend/*.tsbuildinfo
+/frontend/vite.config.js
+/frontend/vite.config.d.ts
+
+# Runtime data
+/data/
+/music/
+*.db
+*.db-shm
+*.db-wal
+
+# Environment and editors
+.env
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
